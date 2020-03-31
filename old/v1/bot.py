@@ -15,7 +15,7 @@ import json
 #A class to get all the technical indicators for trading, using the alpha_vantage api
 class TechnicalIndicators:
     def __init__(self, stock_name):
-        self.api_key= ""
+        self.api_key= "BKI9VUGRMX0R6V47"
         self.stock_name=stock_name
     def question(self):
         stock_name=raw_input("Enter stock name:")
@@ -27,7 +27,7 @@ class TechnicalIndicators:
 
     def rsi(self):
         b=TechIndicators(key=self.api_key,output_format='pandas')
-        data,meta_data = b.get_rsi(symbol=self.stock_name,interval='1min',time_period=10)
+        data,meta_data = b.get_rsi(symbol=self.stock_name,interval='1min',time_period=14)
         return data
     def bbands (self):
         c=TechIndicators(key=self.api_key,output_format='pandas')
@@ -136,16 +136,19 @@ class Strategy():
 
     def check_buy(self):
         #previous 12 min minimum rsi_data
-        if(self.rsi_low < 20):
-            if(self.ema > self.sma):
-                self.buy()
+        if(self.rsi_low < 30):
+	    if(self.volume_high > 3000000):
+                if(self.ema > self.sma):
+                    self.buy()
 
 
     def check_sell(self):
-        if(self.rsi_high>75):
+        if(self.rsi_high>65):
             if(self.sma > self.ema):
                 self.sell()
-
+	#stop loss
+	if(self.close < (self.last_price)*.95):
+		self.sell()
     def buy(self):
         self.balance = self.balance - self.close
         purchased = True
